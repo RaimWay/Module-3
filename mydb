@@ -1,0 +1,21 @@
+import pymysql 
+connection = pymysql.connect('localhost', 'student', '146790', 'mydb')
+
+try:
+    with connection.cursor() as cursor:
+        sql = "INSERT INTO `student` (`idstudent`, `surname`, `name`, `second name`, `home`) VALUES (%s, %s, %s, %s, %s)"
+        cursor.execute(sql, ('14', 'Осадченко', 'Ксения', 'Владимировна', '4'))
+    connection.commit()
+
+    with connection.cursor() as cursor:
+        sql = "UPDATE `mydb`.`student` SET `surname` = 'Вайс' WHERE (`idstudent` = %s);"
+        cursor.execute(sql, ('13'))
+        
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT `idstudent`, `surname`, `name`, `second name`, `city name` FROM student INNER JOIN city ON home = idcity;")
+        rows = cursor.fetchall()
+        for row in rows:
+            print(f'{row[0]} {row[1]} {row[2]} {row[3]} {row[4]}')
+finally:
+    connection.close()
+
