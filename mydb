@@ -1,21 +1,39 @@
 import pymysql 
-connection = pymysql.connect('localhost', 'student', '146790', 'mydb')
 
-try:
-    with connection.cursor() as cursor:
-        sql = "INSERT INTO `student` (`idstudent`, `surname`, `name`, `second name`, `home`) VALUES (%s, %s, %s, %s, %s)"
-        cursor.execute(sql, ('14', 'Осадченко', 'Ксения', 'Владимировна', '4'))
+connection = pymysql.connect(host='localhost',
+                             user='root',
+                             password='MariCher',                             
+                             db='mydb',
+                             charset='cc00166',
+                             cursorclass=pymysql.cursors.DictCursor)
+with connection.cursor() as cursor:
+    cursor.execute('show tables')
+    print(cursor.fetchall())
+
+with connection.cursor() as cursor:
+    cursor.execute('desc participants')
+    print(cursor.fetchall())
+
+with connection.cursor() as cursor:
+    cursor.execute('select * from participants;')
+    print(cursor.fetchall())
+    
+with connection.cursor() as cursor:
+    cursor.execute('''insert into participants (`phone number`,`surname`,`name`,`second name`,`email`) values ('7 123 456 78 90','Марук','Дарья','Витальевна','Daria@mail.ru');''')
+    cursor.execute('''insert into participants (`phone number`,`surname`,`name`,`second name`,`email`) values ('7 123 456 78 91','Максимов','Сергей','Иванович','Sergey@mail.ru');''')
     connection.commit()
+    print(cursor.fetchall())
 
-    with connection.cursor() as cursor:
-        sql = "UPDATE `mydb`.`student` SET `surname` = 'Вайс' WHERE (`idstudent` = %s);"
-        cursor.execute(sql, ('13'))
-        
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT `idstudent`, `surname`, `name`, `second name`, `city name` FROM student INNER JOIN city ON home = idcity;")
-        rows = cursor.fetchall()
-        for row in rows:
-            print(f'{row[0]} {row[1]} {row[2]} {row[3]} {row[4]}')
-finally:
-    connection.close()
+with connection.cursor() as cursor:
+    cursor.execute('''update participants set `surname` = 'Иванов', `name` = 'Иван', `second name` = 'Иванович', `email` = 'Ivan@mail.ru' where (`phone number`= '7 123 456 78 92') and (`surname` = '555') and (`name` = '555') 
+    and (`second name` = '555') and (`email` = '555');''')
+    connection.commit()
+    print(cursor.fetchall())
+
+with connection.cursor() as cursor:
+    cursor.execute('select * from participants;')
+    print(cursor.fetchall())
+
+connection.close()
+
 
